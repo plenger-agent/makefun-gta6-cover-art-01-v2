@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sunset Press — GTA-Style Cover Art Studio</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">SP</span>
+    <span class="brand-name">SUNSET PRESS <em>cover studio</em></span>
+  </div>
+  <nav class="steps" aria-label="Steps">
+    <span><b>1</b> Photos</span>
+    <span><b>2</b> Crop &amp; Arrange</span>
+    <span><b>3</b> Style &amp; Title</span>
+    <span><b>4</b> Export PNG</span>
+  </nav>
+  <div class="export-cluster">
+    <span id="saved-note" class="saved-note" role="status"></span>
+    <button type="button" class="export-btn" data-export="wide">Wide PNG</button>
+    <button type="button" class="export-btn" data-export="portrait">Portrait PNG</button>
+    <button type="button" class="export-btn" data-export="square">Square PNG</button>
+    <button type="button" id="export-all" class="export-btn primary">Export All 3 Sizes</button>
+  </div>
+</header>
+
+<main class="studio">
+  <aside class="rail">
+    <h2>Photos</h2>
+    <label class="add-photos" for="photo-input">＋ Add your photos</label>
+    <input id="photo-input" type="file" accept="image/*" multiple hidden>
+    <div class="mode-row">
+      <button type="button" id="mode-one-photo">One photo → all panels</button>
+      <button type="button" id="mode-auto-fill">Auto-fill panels</button>
+    </div>
+    <div id="photo-list" class="photo-list"></div>
+    <p class="rail-hint">Click a photo, then click a panel to place it — or drag
+      the photo onto the cover. Drop or paste photos anywhere to add them.</p>
+    <p class="privacy-line">Works offline · your photos never leave this machine.</p>
+  </aside>
+
+  <section class="stage">
+    <div class="size-tabs" role="tablist" aria-label="Post size">
+      <button type="button" data-size="wide" class="active">Wide · 1920 × 1080</button>
+      <button type="button" data-size="portrait">Portrait · 1080 × 1350</button>
+      <button type="button" data-size="square">Square · 1080 × 1080</button>
+    </div>
+    <div class="cover-wrap">
+      <canvas id="cover-canvas" width="1920" height="1080"></canvas>
+    </div>
+    <p class="stage-hint">Drag on a panel to pan its photo · mouse wheel zooms ·
+      click selects the panel for the controls on the right.</p>
+  </section>
+
+  <aside class="controls">
+    <section>
+      <h2>Layout</h2>
+      <div id="layout-grid" class="layout-grid"></div>
+      <label class="slider-row">Gutter <input type="range" data-slider="gutter" min="0" max="0.02" step="0.001"></label>
+    </section>
+
+    <section>
+      <h2>Grade</h2>
+      <div id="grade-list" class="chip-list"></div>
+      <label class="slider-row">Strength <input type="range" data-slider="strength" min="0" max="1" step="0.01"></label>
+      <label class="slider-row">Contrast <input type="range" data-slider="contrast" min="0.7" max="1.5" step="0.01"></label>
+      <label class="slider-row">Saturation <input type="range" data-slider="saturation" min="0.4" max="1.8" step="0.01"></label>
+      <label class="slider-row">Grain <input type="range" data-slider="grain" min="0" max="1" step="0.01"></label>
+      <label class="slider-row">Vignette <input type="range" data-slider="vignette" min="0" max="1" step="0.01"></label>
+      <label class="slider-row">Halftone dots <input type="range" data-slider="halftone" min="0" max="1" step="0.01"></label>
+    </section>
+
+    <section>
+      <h2>Lettering</h2>
+      <div id="lettering-styles" class="chip-list"></div>
+      <label class="field-row">Placement
+        <select id="title-placement">
+          <option value="bottom">Bottom centre</option>
+          <option value="stacked">Stacked left</option>
+        </select>
+      </label>
+      <label class="check-row"><input type="checkbox" id="title-lean"> Forward lean</label>
+    </section>
+
+    <section>
+      <h2>Selected panel · <span id="panel-name">Panel 1</span></h2>
+      <label class="slider-row">Zoom <input type="range" id="panel-zoom" min="1" max="3" step="0.01"></label>
+      <label class="slider-row">Rotate <input type="range" id="panel-rotate" min="-30" max="30" step="0.5"></label>
+      <label class="slider-row">Pan X <input type="range" id="panel-panx" min="-400" max="400" step="2"></label>
+      <label class="slider-row">Pan Y <input type="range" id="panel-pany" min="-400" max="400" step="2"></label>
+      <div class="mode-row">
+        <button type="button" id="panel-mirror">Mirror</button>
+        <button type="button" id="panel-reset">Reset crop</button>
+      </div>
+      <label class="field-row">Swap with
+        <select id="panel-swap"></select>
+      </label>
+      <label class="field-row">Replace photo with
+        <select id="panel-replace"></select>
+      </label>
+      <label class="field-row">Panel grade
+        <select id="panel-grade"></select>
+      </label>
+      <label class="check-row"><input type="checkbox" id="panel-halftone"> Halftone ink on this panel</label>
+      <label class="check-row"><input type="checkbox" id="panel-speedlines"> Speed lines on this panel</label>
+      <label class="field-row">Tag place <input type="text" id="tag-place" maxlength="24"></label>
+      <label class="field-row">Tag time <input type="text" id="tag-time" maxlength="10"></label>
+      <label class="field-row">Tag sub-line <input type="text" id="tag-sub" maxlength="30"></label>
+    </section>
+
+    <section>
+      <h2>Cover text &amp; furniture</h2>
+      <label class="field-row">Title <input type="text" id="text-title" maxlength="26"></label>
+      <label class="field-row">Script subtitle <input type="text" id="text-script" maxlength="30"></label>
+      <label class="field-row">Tagline <input type="text" id="text-tagline" maxlength="44"></label>
+      <label class="field-row">Pull-quote <input type="text" id="text-quote" maxlength="40"></label>
+      <label class="field-row">Quote source <input type="text" id="text-quote-source" maxlength="26"></label>
+      <label class="field-row">Seal lines <span class="triple">
+        <input type="text" id="text-seal-top" maxlength="12">
+        <input type="text" id="text-seal-mid" maxlength="12">
+        <input type="text" id="text-seal-bot" maxlength="12"></span>
+      </label>
+      <label class="field-row">Volume <input type="text" id="text-volume" maxlength="10"></label>
+      <label class="field-row">Edition <input type="text" id="text-edition" maxlength="12"></label>
+      <label class="field-row">Ribbon <input type="text" id="text-ribbon" maxlength="24"></label>
+      <label class="field-row">HUD word <input type="text" id="text-hud" maxlength="10"></label>
+      <label class="slider-row">Stars <input type="range" id="text-stars" min="0" max="5" step="1"></label>
+      <div class="check-grid">
+        <label class="check-row"><input type="checkbox" data-furniture="seal"> Seal</label>
+        <label class="check-row"><input type="checkbox" data-furniture="quote"> Stars + quote</label>
+        <label class="check-row"><input type="checkbox" data-furniture="ribbon"> Ribbon</label>
+        <label class="check-row"><input type="checkbox" data-furniture="volume"> Volume tag</label>
+        <label class="check-row"><input type="checkbox" data-furniture="hud"> HUD plate</label>
+        <label class="check-row"><input type="checkbox" data-furniture="taglineStrip"> Tagline strip</label>
+        <label class="check-row"><input type="checkbox" data-furniture="panelTags"> Panel tags</label>
+      </div>
+    </section>
+  </aside>
+</main>
+
+<script type="module" src="src/studio.js"></script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+# Local build/capture by-products — never part of the entry.
+tools/shots-raw/
+out/
